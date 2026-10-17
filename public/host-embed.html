@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Host Portal — Embedded 3D Workspace Demo</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    header {
+      background: #1e293b;
+      border-bottom: 1px solid #334155;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .badge {
+      background: #3b82f6;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .main-container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+    .host-sidebar {
+      width: 320px;
+      background: #1e293b;
+      border-right: 1px solid #334155;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 13px;
+    }
+    .btn {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 12px;
+      transition: background 0.15s;
+    }
+    .btn:hover { background: #1d4ed8; }
+    .btn-secondary {
+      background: #475569;
+    }
+    .btn-secondary:hover { background: #334155; }
+    .iframe-container {
+      flex: 1;
+      position: relative;
+      background: #090d16;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .log-box {
+      flex: 1;
+      background: #090d16;
+      border: 1px solid #334155;
+      border-radius: 4px;
+      padding: 8px;
+      font-family: monospace;
+      font-size: 11px;
+      color: #4ade80;
+      overflow-y: auto;
+      max-height: 220px;
+    }
+    .log-entry { margin-bottom: 4px; word-break: break-all; }
+  </style>
+</head>
+<body>
+  <header>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span class="badge">Host OEM Application</span>
+      <strong>Industrial Equipment Configurator (Parent Host Frame)</strong>
+    </div>
+    <div style="font-size: 12px; color: #94a3b8;">
+      Simulated Origin: <code id="origin-display" style="color: #60a5fa;"></code>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <div class="host-sidebar">
+      <div>
+        <h3 style="font-size: 14px; margin-bottom: 6px; color: #f8fafc;">Host Context Injection</h3>
+        <p style="font-size: 12px; color: #94a3b8; line-height: 1.4;">
+          This outer window represents the manufacturer's host portal. It communicates with the embedded Cloudworx 3D editor via a versioned, origin-checked <code style="color: #60a5fa;">postMessage</code> contract.
+        </p>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <label style="font-size: 11px; color: #cbd5e1; font-weight: 600;">Host Project ID:</label>
+        <input id="proj-id" type="text" value="PRJ-OEM-2026-X88" style="background: #0f172a; border: 1px solid #475569; color: white; padding: 6px; border-radius: 4px; font-size: 12px;" />
+      </div>
+
+      <div style="display: flex; gap: 6px;">
+        <button class="btn" onclick="sendInitContext()" style="flex: 1;">
+          Dispatch INIT Handshake
+        </button>
+        <button class="btn btn-secondary" onclick="sendTokenRefresh()" style="flex: 1;">
+          Refresh Token
+        </button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 6px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <strong style="font-size: 12px;">postMessage Bus Activity:</strong>
+          <a href="#" onclick="clearLogs(); return false;" style="font-size: 11px; color: #94a3b8; text-decoration: none;">Clear</a>
+        </div>
+        <div class="log-box" id="logs"></div>
+      </div>
+    </div>
+
+    <div class="iframe-container">
+      <iframe id="editor-frame" src="/" title="Cloudworx Embedded Editor"></iframe>
+    </div>
+  </div>
+
+  <script>
+    const origin = window.location.origin;
+    document.getElementById('origin-display').textContent = origin;
+    const logsEl = document.getElementById('logs');
+    const iframe = document.getElementById('editor-frame');
+
+    function log(msg) {
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+      logsEl.appendChild(entry);
+      logsEl.scrollTop = logsEl.scrollHeight;
+    }
+
+    function clearLogs() {
+      logsEl.innerHTML = '';
+    }
+
+    function sendInitContext() {
+      const projId = document.getElementById('proj-id').value;
+      const message = {
+        type: 'CLOUDWORX_HOST_INIT',
+        version: '1.0.0',
+        payload: {
+          projectId: projId,
+          user: { id: 'usr-oem-44', name: 'Jean-Luc Picard', role: 'PlantArchitect' },
+          roomDimensions: { width: 20, depth: 12, unit: 'm' },
+          auth: {
+            tokenType: 'Bearer',
+            expiresIn: 3600,
+            claims: { iss: 'https://auth.oem-partner.com', aud: 'cloudworx-editor' }
+          }
+        },
+        timestamp: Date.now()
+      };
+
+      iframe.contentWindow.postMessage(message, origin);
+      log(`[SEND -> IFRAME] CLOUDWORX_HOST_INIT for ${projId}`);
+    }
+
+    function sendTokenRefresh() {
+      const message = {
+        type: 'CLOUDWORX_TOKEN_REFRESH',
+        version: '1.0.0',
+        payload: {
+          newExpiresIn: 7200,
+          refreshedAt: new Date().toISOString()
+        },
+        timestamp: Date.now()
+      };
+      iframe.contentWindow.postMessage(message, origin);
+      log(`[SEND -> IFRAME] CLOUDWORX_TOKEN_REFRESH (7200s lease)`);
+    }
+
+    window.addEventListener('message', (event) => {
+      // Validate origin strictly
+      if (event.origin !== origin) return;
+      if (event.data && typeof event.data.type === 'string' && event.data.type.startsWith('CLOUDWORX_')) {
+        log(`[RECV <- IFRAME] ${event.data.type}: ${JSON.stringify(event.data.payload || {})}`);
+      }
+    });
+
+    // Auto-send handshake after iframe loads
+    iframe.onload = () => {
+      setTimeout(sendInitContext, 400);
+    };
+  </script>
+</body>
+</html>
+

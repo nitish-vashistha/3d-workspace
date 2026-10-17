@@ -1,0 +1,73 @@
+{
+  "app": {
+    "title": "Layout Editor",
+    "subtitle": "Industrial Equipment Configuration"
+  },
+  "toolbar": {
+    "undo": "Undo",
+    "redo": "Redo",
+    "delete": "Delete",
+    "save": "Save",
+    "export": "Export",
+    "clear": "Clear All",
+    "benchmark": "Benchmark 500",
+    "language": "Language",
+    "items": "Items",
+    "fps": "FPS",
+    "drawCalls": "Draw Calls"
+  },
+  "palette": {
+    "title": "Equipment Palette",
+    "dragToPlace": "Click to select, then click on grid to place"
+  },
+  "equipment": {
+    "cabinet": "Cabinet",
+    "drive": "Drive",
+    "controlPanel": "Control Panel"
+  },
+  "properties": {
+    "title": "Properties",
+    "noSelection": "Select an item to view properties",
+    "name": "Name",
+    "type": "Type",
+    "positionX": "Position X (m)",
+    "positionZ": "Position Z (m)",
+    "rotation": "Rotation (°)",
+    "dimensions": "Dimensions",
+    "width": "Width",
+    "height": "Height",
+    "depth": "Depth"
+  },
+  "sceneList": {
+    "title": "Scene Items",
+    "empty": "No items placed. Add equipment from the palette.",
+    "count": "{{count}} items"
+  },
+  "rules": {
+    "title": "Rule Violations",
+    "noViolations": "No violations detected",
+    "clearanceViolation": "Clearance violation: {{nameA}} and {{nameB}} are {{distance}}m apart (minimum: 0.6m)",
+    "violationCount": "{{count}} violation(s)"
+  },
+  "bom": {
+    "title": "Bill of Materials",
+    "type": "Type",
+    "category": "Category",
+    "quantity": "Qty",
+    "dimensions": "Dimensions (W×H×D)",
+    "total": "Total Items",
+    "empty": "No items in scene"
+  },
+  "assistant": {
+    "title": "AI Assistant",
+    "placeholder": "Ask about the layout or request changes...",
+    "send": "Send",
+    "accept": "Accept",
+    "reject": "Reject",
+    "thinking": "Analyzing layout...",
+    "proposing": "Proposed change:",
+    "accepted": "Change applied",
+    "rejected": "Change rejected",
+    "previewActive": "Preview active — accept or reject the proposed change"
+  }
+}

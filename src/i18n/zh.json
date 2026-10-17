@@ -1,0 +1,74 @@
+{
+  "app": {
+    "title": "工业布局编辑器",
+    "subtitle": "工业电气设备配置工作区"
+  },
+  "toolbar": {
+    "undo": "撤销",
+    "redo": "重做",
+    "delete": "删除",
+    "save": "保存",
+    "export": "导出",
+    "clear": "清空画布",
+    "benchmark": "500件基准测试",
+    "language": "语言",
+    "items": "设备数",
+    "fps": "帧率 (FPS)",
+    "drawCalls": "绘制调用"
+  },
+  "palette": {
+    "title": "工业设备库",
+    "dragToPlace": "点击选中设备类型，然后在网格画布上点击放置"
+  },
+  "equipment": {
+    "cabinet": "标准电气柜",
+    "drive": "变频驱动器",
+    "controlPanel": "PLC控制台"
+  },
+  "properties": {
+    "title": "属性检查器",
+    "noSelection": "请在视口或列表中选择一件设备以查看属性",
+    "name": "设备名称",
+    "type": "设备类型",
+    "positionX": "坐标 X (米)",
+    "positionZ": "坐标 Z (米)",
+    "rotation": "旋转角度 (°)",
+    "dimensions": "外形尺寸",
+    "width": "宽度",
+    "height": "高度",
+    "depth": "深度"
+  },
+  "sceneList": {
+    "title": "场景设备清单",
+    "empty": "当前场景无设备，请从左侧设备库中添加。",
+    "count": "共 {{count}} 件设备"
+  },
+  "rules": {
+    "title": "工程间距合规校验",
+    "noViolations": "所有设备均满足安全间距要求",
+    "clearanceViolation": "间距违规：\"{{nameA}}\" 与 \"{{nameB}}\" 间距仅 {{distance}} 米 (最小允许间距: 0.6 米)",
+    "violationCount": "{{count}} 处安全违规"
+  },
+  "bom": {
+    "title": "工程物料清单 (BOM)",
+    "type": "设备型号",
+    "category": "分类",
+    "quantity": "数量",
+    "dimensions": "规格尺寸 (宽×高×深)",
+    "total": "设备总计",
+    "empty": "场景为空"
+  },
+  "assistant": {
+    "title": "AI 布局工程助手",
+    "placeholder": "请输入布局咨询或优化指令...",
+    "send": "发送",
+    "accept": "应用建议",
+    "reject": "放弃建议",
+    "thinking": "正在分析电气空间与间距规则...",
+    "proposing": "优化方案提议：",
+    "accepted": "已成功应用优化布局",
+    "rejected": "已放弃优化方案",
+    "previewActive": "绿框预览中 — 请确认是否接受位置调整"
+  }
+}
+

@@ -1,0 +1,73 @@
+{
+  "app": {
+    "title": "Trình chỉnh sửa bố cục",
+    "subtitle": "Cấu hình thiết bị công nghiệp"
+  },
+  "toolbar": {
+    "undo": "Hoàn tác",
+    "redo": "Làm lại",
+    "delete": "Xóa",
+    "save": "Lưu",
+    "export": "Xuất",
+    "clear": "Xóa tất cả",
+    "benchmark": "Kiểm tra 500",
+    "language": "Ngôn ngữ",
+    "items": "Mục",
+    "fps": "FPS",
+    "drawCalls": "Draw Calls"
+  },
+  "palette": {
+    "title": "Bảng thiết bị",
+    "dragToPlace": "Nhấp để chọn, sau đó nhấp vào lưới để đặt"
+  },
+  "equipment": {
+    "cabinet": "Tủ điện",
+    "drive": "Biến tần",
+    "controlPanel": "Bảng điều khiển"
+  },
+  "properties": {
+    "title": "Thuộc tính",
+    "noSelection": "Chọn một mục để xem thuộc tính",
+    "name": "Tên",
+    "type": "Loại",
+    "positionX": "Vị trí X (m)",
+    "positionZ": "Vị trí Z (m)",
+    "rotation": "Xoay (°)",
+    "dimensions": "Kích thước",
+    "width": "Rộng",
+    "height": "Cao",
+    "depth": "Sâu"
+  },
+  "sceneList": {
+    "title": "Danh sách thiết bị",
+    "empty": "Chưa có thiết bị. Thêm từ bảng thiết bị.",
+    "count": "{{count}} mục"
+  },
+  "rules": {
+    "title": "Vi phạm quy tắc",
+    "noViolations": "Không phát hiện vi phạm",
+    "clearanceViolation": "Vi phạm khoảng cách: {{nameA}} và {{nameB}} cách nhau {{distance}}m (tối thiểu: 0.6m)",
+    "violationCount": "{{count}} vi phạm"
+  },
+  "bom": {
+    "title": "Bảng vật liệu",
+    "type": "Loại",
+    "category": "Danh mục",
+    "quantity": "SL",
+    "dimensions": "Kích thước (R×C×S)",
+    "total": "Tổng thiết bị",
+    "empty": "Không có thiết bị"
+  },
+  "assistant": {
+    "title": "Trợ lý AI",
+    "placeholder": "Hỏi về bố cục hoặc yêu cầu thay đổi...",
+    "send": "Gửi",
+    "accept": "Chấp nhận",
+    "reject": "Từ chối",
+    "thinking": "Đang phân tích bố cục...",
+    "proposing": "Thay đổi đề xuất:",
+    "accepted": "Đã áp dụng thay đổi",
+    "rejected": "Đã từ chối thay đổi",
+    "previewActive": "Bản xem trước — chấp nhận hoặc từ chối thay đổi đề xuất"
+  }
+}

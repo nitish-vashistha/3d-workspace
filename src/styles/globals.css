@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  .panel {
+    @apply bg-industrial-800 border border-industrial-700 rounded-lg;
+  }
+
+  .panel-header {
+    @apply px-3 py-2 text-xs font-semibold uppercase tracking-wider text-industrial-400 border-b border-industrial-700;
+  }
+
+  .btn {
+    @apply px-3 py-1.5 rounded text-sm font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-1 focus:ring-offset-industrial-800 disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply btn bg-accent hover:bg-accent-dark text-white;
+  }
+
+  .btn-secondary {
+    @apply btn bg-industrial-700 hover:bg-industrial-600 text-industrial-200;
+  }
+
+  .btn-danger {
+    @apply btn bg-violation hover:bg-violation-dark text-white;
+  }
+
+  .btn-icon {
+    @apply p-1.5 rounded hover:bg-industrial-700 text-industrial-400 hover:text-industrial-200 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-accent;
+  }
+
+  .input-field {
+    @apply w-full px-2 py-1 bg-industrial-900 border border-industrial-600 rounded text-sm text-industrial-100 focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent;
+  }
+
+  .violation-badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-violation-light text-violation-dark;
+  }
+}
+
