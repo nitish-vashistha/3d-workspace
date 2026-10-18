@@ -4,6 +4,7 @@ import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import { FloorGrid } from './FloorGrid';
 import { SceneItems } from './SceneItems';
+import { DragController } from './DragController';
 import { useEditorStore } from '../../store/useEditorStore';
 import { GRID } from '../../types/scene';
 
@@ -68,6 +69,7 @@ export function EditorViewport({ onStats }: EditorViewportProps) {
 
         <FloorGrid />
         <SceneItems />
+        <DragController />
         <PerformanceMonitor onStats={onStats} />
 
         <OrbitControls

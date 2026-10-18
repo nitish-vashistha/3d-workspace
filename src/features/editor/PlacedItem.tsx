@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, useMemo } from 'react';
+import { useRef, useCallback, useMemo } from 'react';
 import * as THREE from 'three';
 import { useEditorStore } from '../../store/useEditorStore';
 import { EQUIPMENT_TYPES } from '../../types/equipment';
@@ -23,7 +23,6 @@ function getGeometry(w: number, h: number, d: number): THREE.BoxGeometry {
 }
 
 function getMaterial(color: string, isViolation: boolean, isSelected: boolean, isHovered: boolean): THREE.MeshStandardMaterial {
-  // Don't cache violation/selection state materials — they change dynamically
   if (isViolation) {
     const key = `violation-${color}`;
     if (!materialCache.has(key)) {
@@ -66,18 +65,17 @@ function getMaterial(color: string, isViolation: boolean, isSelected: boolean, i
   return materialCache.get(key)!;
 }
 
+const floorPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+
 export function PlacedItemMesh({ item }: PlacedItemProps) {
   const meshRef = useRef<THREE.Mesh>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const dragStartRef = useRef<{ x: number; z: number } | null>(null);
 
   const selectedItemId = useEditorStore(s => s.selectedItemId);
   const hoveredItemId = useEditorStore(s => s.hoveredItemId);
   const violations = useEditorStore(s => s.violations);
   const selectItem = useEditorStore(s => s.selectItem);
   const hoverItem = useEditorStore(s => s.hoverItem);
-  const moveItem = useEditorStore(s => s.moveItem);
-  const setDraggedItem = useEditorStore(s => s.setDraggedItem);
+  const startDrag = useEditorStore(s => s.startDrag);
 
   const def = EQUIPMENT_TYPES[item.type];
   const isSelected = selectedItemId === item.id;
@@ -89,36 +87,29 @@ export function PlacedItemMesh({ item }: PlacedItemProps) {
 
   const handleClick = useCallback((e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation();
-    if (!isDragging) {
-      selectItem(item.id);
-    }
-  }, [selectItem, item.id, isDragging]);
+    selectItem(item.id);
+  }, [selectItem, item.id]);
 
   const handlePointerDown = useCallback((e: ThreeEvent<PointerEvent>) => {
+    // Only drag with primary pointer (left mouse click or touch)
+    if (e.button !== 0 && e.nativeEvent.pointerType === 'mouse') return;
     e.stopPropagation();
     selectItem(item.id);
-    setIsDragging(true);
-    setDraggedItem(item.id);
-    dragStartRef.current = { x: item.x, z: item.z };
-    (e.target as HTMLElement)?.setPointerCapture?.(e.pointerId);
-  }, [selectItem, item.id, item.x, item.z, setDraggedItem]);
 
-  const handlePointerMove = useCallback((e: ThreeEvent<PointerEvent>) => {
-    if (!isDragging || !e.point) return;
-    // Move item to pointer position on the floor plane
-    moveItem(item.id, e.point.x, e.point.z);
-  }, [isDragging, moveItem, item.id]);
+    // Compute ground intersection at Y=0 to calculate exact grab offset
+    const intersect = new THREE.Vector3();
+    e.ray.intersectPlane(floorPlane, intersect);
 
-  const handlePointerUp = useCallback(() => {
-    setIsDragging(false);
-    setDraggedItem(null);
-    dragStartRef.current = null;
-  }, [setDraggedItem]);
+    const offsetX = intersect ? item.x - intersect.x : 0;
+    const offsetZ = intersect ? item.z - intersect.z : 0;
+
+    startDrag(item.id, offsetX, offsetZ, item.x, item.z);
+  }, [selectItem, item.id, item.x, item.z, startDrag]);
 
   const handlePointerOver = useCallback((e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation();
     hoverItem(item.id);
-    document.body.style.cursor = 'pointer';
+    document.body.style.cursor = 'grab';
   }, [hoverItem, item.id]);
 
   const handlePointerOut = useCallback(() => {
@@ -137,8 +128,6 @@ export function PlacedItemMesh({ item }: PlacedItemProps) {
         material={material}
         onClick={handleClick}
         onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
         onPointerOver={handlePointerOver}
         onPointerOut={handlePointerOut}
         castShadow

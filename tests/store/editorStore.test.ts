@@ -13,6 +13,8 @@ describe('Editor Store & Undo/Redo Engine', () => {
       historyIndex: 0,
       activeMode: 'select',
       placingType: null,
+      draggedItemId: null,
+      dragState: null,
       violations: [],
       aiProposal: null,
     });
@@ -180,6 +182,39 @@ describe('Editor Store & Undo/Redo Engine', () => {
     expect(useEditorStore.getState().items[id2].x).toBe(2.5);
     expect(useEditorStore.getState().items[id3].x).toBe(3.0);
     expect(useEditorStore.getState().violations.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('smoothly handles live dragging without history pollution and commits once on drag end', () => {
+    const store = useEditorStore.getState();
+    const id = store.addItem('cabinet', 2.0, 2.0);
+    const initialHistoryLength = useEditorStore.getState().history.length;
+
+    // Start drag
+    useEditorStore.getState().startDrag(id, 0, 0, 2.0, 2.0);
+    expect(useEditorStore.getState().draggedItemId).toBe(id);
+
+    // Live move updates multiple times (simulating 60 FPS pointermove)
+    useEditorStore.getState().setLivePosition(id, 2.5, 2.5);
+    useEditorStore.getState().setLivePosition(id, 3.0, 3.0);
+    useEditorStore.getState().setLivePosition(id, 5.0, 5.0);
+
+    // Position updated immediately
+    expect(useEditorStore.getState().items[id].x).toBe(5.0);
+    expect(useEditorStore.getState().items[id].z).toBe(5.0);
+
+    // History should NOT have been polluted during live dragging
+    expect(useEditorStore.getState().history.length).toBe(initialHistoryLength);
+
+    // Release pointer: endDrag
+    useEditorStore.getState().endDrag();
+    expect(useEditorStore.getState().draggedItemId).toBeNull();
+    // Exactly ONE history point committed for the entire drag operation
+    expect(useEditorStore.getState().history.length).toBe(initialHistoryLength + 1);
+
+    // Single undo reverts to pre-drag position (2.0, 2.0)
+    useEditorStore.getState().undo();
+    expect(useEditorStore.getState().items[id].x).toBe(2.0);
+    expect(useEditorStore.getState().items[id].z).toBe(2.0);
   });
 });
 

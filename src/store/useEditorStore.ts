@@ -53,6 +53,13 @@ interface EditorState {
   activeMode: 'select' | 'place';
   placingType: EquipmentTypeId | null;
   draggedItemId: string | null;
+  dragState: {
+    itemId: string;
+    offsetX: number;
+    offsetZ: number;
+    startX: number;
+    startZ: number;
+  } | null;
 
   // === Derived state ===
   violations: Violation[];
@@ -72,6 +79,9 @@ interface EditorState {
   hoverItem: (id: string | null) => void;
   setMode: (mode: 'select' | 'place', placingType?: EquipmentTypeId) => void;
   setDraggedItem: (id: string | null) => void;
+  startDrag: (id: string, offsetX: number, offsetZ: number, startX: number, startZ: number) => void;
+  endDrag: () => void;
+  setLivePosition: (id: string, x: number, z: number) => void;
   undo: () => void;
   redo: () => void;
 
@@ -164,6 +174,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   activeMode: 'select',
   placingType: null,
   draggedItemId: null,
+  dragState: null,
   violations: computeViolations(defaultInitialItems),
   aiProposal: null,
 
@@ -292,7 +303,52 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       selectedItemId: mode === 'place' ? null : get().selectedItemId,
     }),
 
-  setDraggedItem: (id) => set({ draggedItemId: id }),
+  setDraggedItem: (id) => {
+    if (!id) {
+      get().endDrag();
+    } else {
+      set({ draggedItemId: id });
+    }
+  },
+
+  startDrag: (id, offsetX, offsetZ, startX, startZ) =>
+    set({
+      draggedItemId: id,
+      dragState: { itemId: id, offsetX, offsetZ, startX, startZ },
+    }),
+
+  endDrag: () => {
+    const { dragState, items, history, historyIndex } = get();
+    if (dragState) {
+      const item = items[dragState.itemId];
+      if (item && (item.x !== dragState.startX || item.z !== dragState.startZ)) {
+        const { history: newHistory, historyIndex: newIndex } = pushHistory(history, historyIndex, items);
+        set({
+          draggedItemId: null,
+          dragState: null,
+          history: newHistory,
+          historyIndex: newIndex,
+        });
+        return;
+      }
+    }
+    set({ draggedItemId: null, dragState: null });
+  },
+
+  setLivePosition: (id, x, z) => {
+    const item = get().items[id];
+    if (!item) return;
+    const pos = computeValidPosition(x, z, item.type, item.rotation);
+    if (item.x === pos.x && item.z === pos.z) return;
+    const newItems = {
+      ...get().items,
+      [id]: { ...item, x: pos.x, z: pos.z },
+    };
+    set({
+      items: newItems,
+      violations: computeViolations(newItems),
+    });
+  },
 
   undo: () => {
     const { historyIndex, history } = get();

@@ -56,8 +56,6 @@ export function FloorGrid() {
   const placingType = useEditorStore(s => s.placingType);
   const addItem = useEditorStore(s => s.addItem);
   const selectItem = useEditorStore(s => s.selectItem);
-  const draggedItemId = useEditorStore(s => s.draggedItemId);
-  const moveItem = useEditorStore(s => s.moveItem);
 
   const [hoverPos, setHoverPos] = useState<{ x: number; z: number } | null>(null);
 
@@ -79,9 +77,6 @@ export function FloorGrid() {
           }
         }}
         onPointerMove={(e: ThreeEvent<PointerEvent>) => {
-          if (draggedItemId && e.point) {
-            moveItem(draggedItemId, e.point.x, e.point.z);
-          }
           if (activeMode === 'place' && e.point) {
             setHoverPos({
               x: Math.max(0.5, Math.min(GRID.WIDTH - 0.5, Math.round(e.point.x / GRID.CELL_SIZE) * GRID.CELL_SIZE)),
