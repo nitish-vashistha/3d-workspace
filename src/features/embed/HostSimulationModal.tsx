@@ -72,28 +72,29 @@ export function HostSimulationModal({ isOpen, onClose }: HostSimulationModalProp
 
   return (
     <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-industrial-800 border border-industrial-600 rounded-lg max-w-xl w-full shadow-2xl overflow-hidden flex flex-col">
-        <div className="panel-header flex items-center justify-between bg-industrial-900 px-4 py-3">
+      <div className="bg-industrial-800 border border-industrial-600 rounded-lg max-w-xl w-full max-h-[90vh] shadow-2xl overflow-hidden flex flex-col">
+        <div className="panel-header flex items-center justify-between bg-industrial-900 px-4 py-3 flex-shrink-0">
           <div className="flex items-center gap-2">
             <span className="text-accent text-sm">🔗</span>
-            <span className="font-semibold text-white">Host Application PostMessage Simulator</span>
+            <span className="font-semibold text-white">Host PostMessage Simulator</span>
           </div>
           <button
             onClick={onClose}
-            className="text-industrial-400 hover:text-white font-mono text-sm"
+            className="text-industrial-400 hover:text-white font-mono text-sm p-1"
+            aria-label="Close modal"
           >
             ✕
           </button>
         </div>
 
-        <div className="p-4 space-y-4 text-xs">
+        <div className="p-4 space-y-4 text-xs overflow-y-auto flex-1">
           <p className="text-industrial-300 leading-relaxed">
             Demonstrates the versioned <code className="text-accent font-mono">postMessage</code> protocol used
             when Cloudworx 3D Workspace is embedded within an industrial OEM host portal.
             Strict origin matching (<code className="text-accent font-mono">{window.location.origin}</code>) and payload schema checks are enforced.
           </p>
 
-          <div className="grid grid-cols-2 gap-3 bg-industrial-900/50 p-3 rounded border border-industrial-700/50">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-industrial-900/50 p-3 rounded border border-industrial-700/50">
             <div>
               <label className="text-industrial-400 block mb-1">Host Project Context:</label>
               <input
@@ -115,16 +116,16 @@ export function HostSimulationModal({ isOpen, onClose }: HostSimulationModalProp
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <button
               onClick={sendHostHandshake}
-              className="btn-primary text-xs py-1.5 px-3 flex-1"
+              className="btn-primary text-xs py-2 px-3 flex-1"
             >
               Dispatch CLOUDWORX_HOST_INIT
             </button>
             <button
               onClick={sendTokenRefresh}
-              className="btn-secondary text-xs py-1.5 px-3 flex-1"
+              className="btn-secondary text-xs py-2 px-3 flex-1"
             >
               Simulate Token Refresh
             </button>

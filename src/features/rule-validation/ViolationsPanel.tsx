@@ -71,7 +71,7 @@ export function ViolationsPanel() {
                           distance: v.distance.toFixed(2),
                         })}
                       </p>
-                      <div className="flex items-center justify-between mt-1.5">
+                      <div className="flex items-center justify-between mt-1.5 flex-wrap gap-1.5">
                         <div className="flex gap-1.5">
                           <button
                             onClick={() => selectItem(v.itemA)}
